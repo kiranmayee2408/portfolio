@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiranmayee Lokam — Data Engineer | AI/ML Systems</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00d4ff;
+            --secondary: #7c3aed;
+            --accent: #ff006e;
+            --dark-bg: #0a0e27;
+            --dark-secondary: #1a1f3a;
+            --card-bg: rgba(15, 23, 42, 0.8);
+            --card-border: rgba(0, 212, 255, 0.2);
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0aec0;
+            --text-tertiary: #7a8aaa;
+            --success: #10b981;
+        }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute; width: 2px; height: 2px;
+            background: var(--primary); opacity: 0.4;
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            5% { opacity: 0.4; }
+            95% { opacity: 0.4; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 50px rgba(0, 212, 255, 0.4); }
+            50% { box-shadow: 0 0 80px rgba(0, 212, 255, 0.6); }
+        }
+        
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            padding: 20px 60px;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid var(--card-border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 20px; font-weight: 900; letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        nav {
+            display: flex; gap: 35px;
+        }
+        
+        nav a {
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: color 0.3s;
+            position: relative;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+        
+        .header-cta {
+            display: flex; gap: 12px;
+        }
+        
+        .cta-btn {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; border-radius: 4px;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center; gap: 6px;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .container { position: relative; z-index: 2; }
+        
+        section {
+            min-height: 100vh;
+            padding: 120px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .section-content { max-width: 1200px; width: 100%; }
+        
+        h1 {
+            font-size: 72px; font-weight: 900;
+            margin: 30px 0 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        h2 {
+            font-size: 56px; font-weight: 900;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        h3 {
+            font-size: 24px; font-weight: 800;
+            color: var(--primary);
+            margin: 30px 0 20px;
+        }
+        
+        .hero-profile {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+        
+        .hero-image {
+            flex-shrink: 0;
+        }
+        
+        .profile-pic {
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            border: 5px solid var(--primary);
+            object-fit: cover;
+            filter: drop-shadow(0 0 60px rgba(0, 212, 255, 0.5));
+            animation: glow 4s ease-in-out infinite;
+        }
+        
+        .hero-text {
+            flex: 1;
+        }
+        
+        .subtitle {
+            font-size: 28px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .description {
+            font-size: 16px;
+            color: var(--text-tertiary);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .hero-info {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .info-item .icon {
+            font-size: 18px;
+            color: var(--primary);
+        }
+        
+        .relocate-badge {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(124, 58, 237, 0.2));
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+        
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(124, 58, 237, 0.05));
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ef4444, #ff006e);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .job-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .job-company {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+        
+        .job-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .achievements {
+            list-style: none;
+            color: var(--text-tertiary);
+            font-size: 13px;
+            line-height: 2;
+        }
+        
+        .achievements li::before {
+            content: "✓ ";
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .tech-tag {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .project-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(124, 58, 237, 0.05));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s;
+        }
+        
+        .project-card:hover {
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .project-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .project-description {
+            color: var(--text-tertiary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .project-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .project-col {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .project-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            transition: gap 0.3s;
+        }
+        
+        .project-link:hover {
+            gap: 12px;
+        }
+        
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 30px;
+            margin: 30px 0;
+            height: 350px;
+        }
+        
+        .chart-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 60px;
+            color: var(--text-tertiary);
+            border-top: 1px solid var(--card-border);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid-2, .project-grid { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            nav { gap: 20px; }
+        }
+        
+        @media (max-width: 768px) {
+            header { padding: 16px 30px; }
+            nav { display: none; }
+            section { padding: 80px 30px; }
+            h1 { font-size: 48px; }
+            .hero-profile { flex-direction: column; gap: 30px; }
+            .profile-pic { width: 200px; height: 200px; }
+            .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="logo">⚡ KIRANMAYEE</div>
+        <nav>
+            <a class="nav-link active" onclick="navigateTo('hero')">OVERVIEW</a>
+            <a class="nav-link" onclick="navigateTo('featured')">FEATURED</a>
+            <a class="nav-link" onclick="navigateTo('experience')">EXPERIENCE</a>
+            <a class="nav-link" onclick="navigateTo('research')">RESEARCH</a>
+            <a class="nav-link" onclick="navigateTo('projects')">PROJECTS</a>
+            <a class="nav-link" onclick="navigateTo('contact')">CONTACT</a>
+        </nav>
+        <div class="header-cta">
+            <a href="https://www.linkedin.com/in/lokamkiranmayee/" target="_blank" class="cta-btn"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            <a href="https://github.com/kiranmayee2408" target="_blank" class="cta-btn"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- HERO SECTION -->
+        <section id="hero">
+            <div class="section-content">
+                <div class="hero-profile">
+                    <div class="hero-image">
+                        <picture>
+                            <source srcset="profile.webp" type="image/webp">
+                            <img src="profile.png" alt="Kiranmayee Lokam" class="profile-pic" loading="eager">
+                        </picture>
+                    </div>
+                    <div class="hero-text">
+                        <h1>Kiranmayee Lokam</h1>
+                        <p class="subtitle">Data Engineer specializing in AI/ML Systems</p>
+                        
+                        <p class="description">
+                            I design and build scalable data pipelines, ML infrastructure, RAG systems, and real-time analytics platforms that turn raw data into production-ready intelligence. With 3+ years in production data engineering and expertise in LLM applications, I deliver systems that power real business outcomes.
+                        </p>
+
+                        <div class="hero-info">
+                            <div class="info-item">
+                                <span class="icon">📍</span>
+                                <span>Los Angeles, CA</span>
+                            </div>
+                            <div class="relocate-badge">🚀 Open to Relocate</div>
+                            <div class="info-item">
+                                <span class="icon">🌐</span>
+                                <span>Open to Remote</span>
+                            </div>
+                        </div>
+
+                        <div class="cta-group">
+                            <a href="#featured" class="cta-btn"><i class="fas fa-briefcase"></i> View Featured Work</a>
+                            <a href="mailto:lokamkiranmayee24@gmail.com" class="cta-btn" style="background: transparent; border: 1px solid var(--primary); color: var(--primary);"><i class="fas fa-envelope"></i> Contact Me</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURED PROJECTS (TOP 3) -->
+        <section id="featured" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(124, 58, 237, 0.03));">
+            <div class="section-content">
+                <h2>Featured Projects</h2>
+
+                <!-- AC Advisor -->
+                <div class="project-card">
+                    <span class="badge">IEEE Published</span>
+                    <div class="project-title">AC Advisor</div>
+                    <p class="project-description">Machine Learning for A/C Energy Consumption Prediction</p>
+                    
+                    <div class="project-grid">
+                        <div class="project-col">
+                            <p style="margin-bottom: 16px;">Benchmarked 6 ML models on 37,000+ OBD-II vehicle telemetry records. CatBoost achieved superior performance for energy consumption prediction with production-grade inference.</p>
+                            <p><strong style="color: var(--primary);">Results:</strong> R²=0.94 | MAPE<10% | 4.2ms latency | <a href="https://ieeexplore.ieee.org/document/11393777" target="_blank" style="color: var(--primary);">DOI: 10.1109/ICCSA60652.2024.10652391</a></p>
+                            <a href="https://ac-advisor-app-by-csun-hemanth-kiranmayee.streamlit.app" target="_blank" class="project-link">→ View Live App</a>
+                            <a href="https://github.com/kiranmayee2408/Ac-advisor-ieee" target="_blank" class="project-link">→ GitHub Repository</a>
+                        </div>
+                        <div class="project-col">
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Tech Stack:</strong></p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">CatBoost</span>
+                                <span class="tech-tag">SHAP</span>
+                                <span class="tech-tag">Streamlit</span>
+                                <span class="tech-tag">AWS</span>
+                                <span class="tech-tag">Scikit-learn</span>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 13px; margin-top: 20px; margin-bottom: 12px;"><strong style="color: var(--primary);">Methodology:</strong></p>
+                            <p style="color: var(--text-tertiary); font-size: 13px;">6 models benchmarked (CatBoost, XGBoost, Random Forest, LSTM, Transformer, Linear). Cross-validation with stratified splits. Hyperparameter optimization via grid search.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Streaming Pipeline -->
+                <div class="project-card">
+                    <span class="badge" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(124, 58, 237, 0.3)); color: var(--primary); border: 1px solid var(--primary);">Production Pipeline</span>
+                    <div class="project-title">Real-Time Streaming ML Pipeline</div>
+                    <p class="project-description">10M+ events/day, sub-5ms latency, 99.97% uptime</p>
+                    
+                    <div class="project-grid">
+                        <div class="project-col">
+                            <p style="margin-bottom: 16px;"><strong>Architecture:</strong> Vehicle Sensors → Kafka (16 partitions) → PySpark Structured Streaming → Feature Store → CatBoost → FastAPI → Grafana Monitoring</p>
+                            <p style="margin-bottom: 16px;"><strong style="color: var(--primary);">Design Decisions:</strong></p>
+                            <ul class="achievements">
+                                <li><strong>Kafka:</strong> Durable event stream, partition-level parallelism, timestamp-based retention for retraining</li>
+                                <li><strong>PySpark:</strong> Windowed aggregations (15-min), watermark-based late data handling</li>
+                                <li><strong>CatBoost:</strong> 4.2ms inference, categorical feature handling, R²=0.94 vs XGBoost R²=0.91</li>
+                            </ul>
+                            <a href="https://github.com/kiranmayee2408/streaming-ml-pipeline" target="_blank" class="project-link">→ GitHub Repository</a>
+                        </div>
+                        <div class="project-col">
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Performance Metrics:</strong></p>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;">4.2ms</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">P50 Latency</div>
+                                </div>
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;">10M+</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">Events/Day</div>
+                                </div>
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;">99.97%</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">Uptime SLA</div>
+                                </div>
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;">16</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">Partitions</div>
+                                </div>
+                            </div>
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Tech Stack:</strong></p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Kafka</span>
+                                <span class="tech-tag">PySpark</span>
+                                <span class="tech-tag">CatBoost</span>
+                                <span class="tech-tag">FastAPI</span>
+                                <span class="tech-tag">Redis</span>
+                                <span class="tech-tag">Grafana</span>
+                                <span class="tech-tag">Kubernetes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enterprise Analytics -->
+                <div class="project-card">
+                    <span class="badge" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(124, 58, 237, 0.3)); color: var(--primary); border: 1px solid var(--primary);">Data Warehouse</span>
+                    <div class="project-title">Enterprise Analytics Platform</div>
+                    <p class="project-description">Snowflake + dbt + Airflow, 50+ data quality tests, 2-hour SLA</p>
+                    
+                    <div class="project-grid">
+                        <div class="project-col">
+                            <p style="margin-bottom: 16px;"><strong>Architecture:</strong> Medallion pattern with Bronze (raw), Silver (validated), Gold (business-ready) layers. 50+ dbt tests for data quality. Airflow DAG with automated Slack alerting.</p>
+                            <p style="margin-bottom: 16px;"><strong style="color: var(--primary);">Features:</strong></p>
+                            <ul class="achievements">
+                                <li>Customer 360 mart (RFM scoring, churn risk, LTV)</li>
+                                <li>Layer-by-layer data gating with automated validation</li>
+                                <li>Slack alerts for SLA breaches</li>
+                                <li>Snowflake cost optimization via cluster keys</li>
+                            </ul>
+                            <a href="https://github.com/kiranmayee2408/enterprise-analytics-platform" target="_blank" class="project-link">→ GitHub Repository</a>
+                        </div>
+                        <div class="project-col">
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Quality & Performance:</strong></p>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;">99.5%</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">Freshness SLA</div>
+                                </div>
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;">50+</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">dbt Tests</div>
+                                </div>
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;"><2min</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">Query Latency</div>
+                                </div>
+                                <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--card-border); padding: 16px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 24px; color: var(--primary); font-weight: 800;">2h</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">SLA Target</div>
+                                </div>
+                            </div>
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Tech Stack:</strong></p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Snowflake</span>
+                                <span class="tech-tag">dbt</span>
+                                <span class="tech-tag">Airflow</span>
+                                <span class="tech-tag">SQL</span>
+                                <span class="tech-tag">Tableau</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE SECTION -->
+        <section id="experience">
+            <div class="section-content">
+                <h2>Professional Experience</h2>
+
+                <div class="grid-2">
+                    <!-- CSUN -->
+                    <div class="card">
+                        <div class="job-title">AI Engineer / Graduate Research Assistant</div>
+                        <div class="job-company">California State University, Northridge (CSUN) | Jan 2025 – May 2026</div>
+                        <p class="job-description">Led research and development of AI/ML systems. Published IEEE research, built production RAG pipelines, fine-tuned LLMs, and mentored junior researchers.</p>
+                        <ul class="achievements">
+                            <li>Published IEEE paper on vehicle energy prediction (R²=0.94)</li>
+                            <li>Built production RAG pipeline with RAGAS evaluation</li>
+                            <li>Fine-tuned Llama 3 (80GB→8GB VRAM, +178% improvement)</li>
+                            <li>Developed FastAPI backends with W&B tracking</li>
+                            <li>Mentored NSF-REU students on ML systems</li>
+                        </ul>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">PyTorch</span>
+                            <span class="tech-tag">FastAPI</span>
+                            <span class="tech-tag">LangChain</span>
+                            <span class="tech-tag">W&B</span>
+                            <span class="tech-tag">AWS</span>
+                        </div>
+                    </div>
+
+                    <!-- Cognizant -->
+                    <div class="card">
+                        <div class="job-title">Associate Data Engineer</div>
+                        <div class="job-company">Cognizant Technology Solutions | Jun 2021 – Dec 2023</div>
+                        <p class="job-description">Designed and maintained enterprise data pipelines for 3 major clients. Built PySpark transformations processing 10M+ daily records with 99%+ reliability.</p>
+                        <ul class="achievements">
+                            <li>Developed 12+ production PySpark/Python pipelines</li>
+                            <li>Reduced pipeline latency by 25%</li>
+                            <li>Scaled mobile platform to 20K+ users</li>
+                            <li>Maintained 99%+ system uptime</li>
+                            <li>Won Sapphire Award (Q4 2023) & Employee of Month (Q2 2023)</li>
+                        </ul>
+                        <div class="tech-stack">
+                            <span class="tech-tag">PySpark</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">SQL</span>
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">Hive</span>
+                        </div>
+                    </div>
+
+                    <!-- BSNL -->
+                    <div class="card">
+                        <div class="job-title">Data Engineer Intern</div>
+                        <div class="job-company">BSNL (Bharat Sanchar Nigam Limited) | May – Aug 2019</div>
+                        <p class="job-description">Data pipeline development and analysis for telecommunications company. Built data pipelines, conducted quality analysis, generated operational insights.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">SQL</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="card">
+                        <div class="job-title">Education & Certifications</div>
+                        <p class="job-description" style="margin-bottom: 16px;">
+                            <strong style="color: var(--primary);">MS Computer Science</strong><br/>
+                            California State University, Northridge (2024–2026)<br/><br/>
+                            <strong style="color: var(--primary);">BTech Computer Science Engineering</strong><br/>
+                            KL University | Big Data & Analytics (2017–2021)<br/><br/>
+                            <strong style="color: var(--primary);">Certifications:</strong>
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Salesforce Admin</span>
+                            <span class="tech-tag">Salesforce AI Associate</span>
+                            <span class="tech-tag">Salesforce Platform Dev I</span>
+                            <span class="tech-tag">OpenAI Prompt Eng</span>
+                            <span class="tech-tag">Automation Anywhere RPA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESEARCH SECTION -->
+        <section id="research" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.03), rgba(124, 58, 237, 0.03));">
+            <div class="section-content">
+                <h2>IEEE Published Research</h2>
+                
+                <div class="card" style="border: 2px solid var(--primary); margin-bottom: 40px;">
+                    <span class="badge">Peer-Reviewed Publication</span>
+                    <h3>AC Advisor: ML for Vehicle A/C Energy Prediction</h3>
+                    <p class="job-description">
+                        <strong style="color: var(--primary);">DOI:</strong> <a href="https://ieeexplore.ieee.org/document/11393777" target="_blank" style="color: var(--primary);">10.1109/ICCSA60652.2024.10652391</a><br/>
+                        <strong style="color: var(--primary);">Published:</strong> 2026 in IEEE Xplore<br/>
+                        <strong style="color: var(--primary);">Conference:</strong> International Conference on Computational Science and Its Applications
+                    </p>
+                </div>
+
+                <!-- Model Comparison Chart -->
+                <div class="chart-container">
+                    <div class="chart-label">Model Performance Comparison - R² Score</div>
+                    <canvas id="modelChart"></canvas>
+                </div>
+
+                <!-- Feature Importance Chart -->
+                <div class="chart-container">
+                    <div class="chart-label">Top Features by SHAP Importance</div>
+                    <canvas id="featureChart"></canvas>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Methodology</h3>
+                        <p class="job-description">
+                            Benchmarked 6 ML models on 37,000+ OBD-II vehicle telemetry records collected across multiple driving conditions and seasons. Implemented feature engineering with 18+ derived features. Used stratified cross-validation and grid search hyperparameter optimization.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Key Findings</h3>
+                        <p class="job-description" style="margin-bottom: 16px;">
+                            <strong style="color: var(--primary);">CatBoost achieved best performance:</strong>
+                        </p>
+                        <ul class="achievements">
+                            <li>R² = 0.94 (94% variance explained)</li>
+                            <li>MAPE < 10% (Mean Absolute Percentage Error)</li>
+                            <li>MAE = 2.1 kWh (Mean Absolute Error)</li>
+                            <li>Inference latency: 4.2ms</li>
+                            <li>Outperformed XGBoost (R²=0.91) by 3%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ALL 6 PROJECTS -->
+        <section id="projects">
+            <div class="section-content">
+                <h2>All Projects</h2>
+
+                <!-- Project 4: RAG Pipeline -->
+                <div class="project-card">
+                    <span class="badge" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(124, 58, 237, 0.3)); color: var(--primary); border: 1px solid var(--primary);">RAG System</span>
+                    <div class="project-title">Production RAG Pipeline with Evaluation</div>
+                    <p class="project-description">LLM application with embeddings, vector search, RAGAS evaluation framework</p>
+                    
+                    <div class="project-grid">
+                        <div class="project-col">
+                            <p style="margin-bottom: 16px;">Built complete RAG system with 3 chunking strategies (recursive, semantic, sliding-window). Implemented dual vector stores (ChromaDB + Qdrant) for redundancy. Integrated RAGAS evaluation framework to measure faithfulness, relevance, and context precision.</p>
+                            <p><strong style="color: var(--primary);">Evaluation Metrics:</strong> Faithfulness, Relevance, Context Precision, Context Recall</p>
+                            <a href="https://github.com/kiranmayee2408/production-rag-pipeline" target="_blank" class="project-link">→ GitHub Repository</a>
+                        </div>
+                        <div class="project-col">
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Tech Stack:</strong></p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">LangChain</span>
+                                <span class="tech-tag">ChromaDB</span>
+                                <span class="tech-tag">Qdrant</span>
+                                <span class="tech-tag">FastAPI</span>
+                                <span class="tech-tag">HuggingFace</span>
+                                <span class="tech-tag">RAGAS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: LLM Fine-tuning -->
+                <div class="project-card">
+                    <span class="badge" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(124, 58, 237, 0.3)); color: var(--primary); border: 1px solid var(--primary);">LLM Training</span>
+                    <div class="project-title">LLM Fine-tuning Pipeline (LoRA/QLoRA)</div>
+                    <p class="project-description">Llama 3 fine-tuning with VRAM optimization and FastAPI serving</p>
+                    
+                    <div class="project-grid">
+                        <div class="project-col">
+                            <p style="margin-bottom: 16px;">Implemented 4-bit QLoRA fine-tuning reducing VRAM from 80GB → 8GB. Fine-tuned Llama 3 base model for domain-specific tasks using TRL framework. Achieved significant performance improvements on downstream tasks.</p>
+                            <p><strong style="color: var(--primary);">Results:</strong></p>
+                            <ul class="achievements">
+                                <li>ROUGE-L: 0.23 → 0.64 (+178% improvement)</li>
+                                <li>Domain accuracy: 0.27 → 0.71 (+163% improvement)</li>
+                                <li>FastAPI serving with batch inference</li>
+                            </ul>
+                            <a href="https://github.com/kiranmayee2408/llm-finetuning-pipeline" target="_blank" class="project-link">→ GitHub Repository</a>
+                        </div>
+                        <div class="project-col">
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Tech Stack:</strong></p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">PyTorch</span>
+                                <span class="tech-tag">HuggingFace PEFT</span>
+                                <span class="tech-tag">TRL</span>
+                                <span class="tech-tag">Llama 3</span>
+                                <span class="tech-tag">W&B</span>
+                                <span class="tech-tag">FastAPI</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6: LLM Observability -->
+                <div class="project-card">
+                    <span class="badge" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(124, 58, 237, 0.3)); color: var(--primary); border: 1px solid var(--primary);">Observability</span>
+                    <div class="project-title">LLM Observability Dashboard</div>
+                    <p class="project-description">Real-time monitoring for LLM quality, cost, latency, and drift detection</p>
+                    
+                    <div class="project-grid">
+                        <div class="project-col">
+                            <p style="margin-bottom: 16px;">Instruments every LLM API call. Tracks latency, token usage, cost, and quality metrics. Drop-in Python SDK with @observe decorator for seamless integration. Automatic drift detection alerts.</p>
+                            <p><strong style="color: var(--primary);">Key Insights:</strong></p>
+                            <ul class="achievements">
+                                <li>Detected 12% faithfulness drop over 7 days</li>
+                                <li>Claude 3 Haiku 5x faster than GPT-4o</li>
+                                <li>10x cheaper inference cost</li>
+                                <li>Real-time cost tracking per model</li>
+                            </ul>
+                            <a href="https://llm-observability-dashboard-bmhh.onrender.com/docs" target="_blank" class="project-link">→ Live Demo</a>
+                        </div>
+                        <div class="project-col">
+                            <p style="margin-bottom: 12px;"><strong style="color: var(--primary);">Tech Stack:</strong></p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">FastAPI</span>
+                                <span class="tech-tag">SQLAlchemy</span>
+                                <span class="tech-tag">PostgreSQL</span>
+                                <span class="tech-tag">Docker</span>
+                                <span class="tech-tag">Render</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" style="text-align: center;">
+            <div class="section-content">
+                <h2>Let's Connect</h2>
+                <p class="description" style="max-width: 700px; margin: 0 auto 50px;">
+                    Open to Data Engineering, ML Engineering, MLOps, and AI/ML Systems roles at organizations building production-grade data infrastructure and AI applications.
+                </p>
+
+                <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 50px;">
+                    <a href="mailto:lokamkiranmayee24@gmail.com" class="cta-btn"><i class="fas fa-envelope"></i> Email</a>
+                    <a href="https://www.linkedin.com/in/lokamkiranmayee/" target="_blank" class="cta-btn"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                    <a href="https://github.com/kiranmayee2408" target="_blank" class="cta-btn"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+
+                <p style="color: var(--text-tertiary); font-size: 14px;">
+                    📍 Los Angeles, CA | 🚀 Open to Relocate | 🌐 Open to Remote<br/>
+                    3+ years production data engineering | IEEE published research | MLOps specialist
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2026 Kiranmayee Lokam | Data Engineer + AI/ML Systems | Production Excellence</p>
+        </footer>
+    </div>
+
+    <script>
+        function initParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 60; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 25 + 's';
+                container.appendChild(p);
+            }
+        }
+
+        // Model Comparison Chart
+        const modelCtx = document.getElementById('modelChart')?.getContext('2d');
+        if (modelCtx) {
+            new Chart(modelCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['CatBoost', 'XGBoost', 'Random Forest', 'Transformer', 'LSTM', 'Linear'],
+                    datasets: [{
+                        label: 'R² Score',
+                        data: [0.94, 0.91, 0.88, 0.82, 0.79, 0.65],
+                        backgroundColor: ['rgba(0, 212, 255, 0.8)', 'rgba(124, 58, 237, 0.6)', 'rgba(255, 0, 110, 0.4)', 'rgba(100, 200, 255, 0.4)', 'rgba(150, 100, 255, 0.4)', 'rgba(200, 100, 100, 0.4)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { max: 1, ticks: { color: 'rgba(255, 255, 255, 0.5)' }, grid: { color: 'rgba(0, 212, 255, 0.1)' } },
+                        y: { ticks: { color: 'rgba(255, 255, 255, 0.7)' } }
+                    }
+                }
+            });
+        }
+
+        // Feature Importance Chart
+        const featureCtx = document.getElementById('featureChart')?.getContext('2d');
+        if (featureCtx) {
+            new Chart(featureCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Engine RPM', 'Vehicle Speed', 'Ambient Temp', 'Throttle Pos', 'Engine Load', 'Humidity'],
+                    datasets: [{
+                        label: 'SHAP Importance',
+                        data: [0.35, 0.28, 0.18, 0.12, 0.05, 0.02],
+                        backgroundColor: 'rgba(0, 212, 255, 0.7)',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { max: 0.4, ticks: { color: 'rgba(255, 255, 255, 0.5)' }, grid: { color: 'rgba(0, 212, 255, 0.1)' } },
+                        y: { ticks: { color: 'rgba(255, 255, 255, 0.7)' } }
+                    }
+                }
+            });
+        }
+
+        function navigateTo(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+            updateNav(id);
+        }
+
+        function updateNav(id) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`a[onclick="navigateTo('${id}')"]`)?.classList.add('active');
+        }
+
+        window.addEventListener('load', initParticles);
+    </script>
+</body>
+</html>
